@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     
     // Top 3 categories
     const topCategories = Object.entries(categoryBreakdown)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([,a], [,b]) => (b as number) - (a as number))
       .slice(0, 3)
       .map(([category, amount]) => ({ category, amount }));
     

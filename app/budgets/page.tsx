@@ -64,10 +64,10 @@ const BudgetForm = ({ budget, onSuccess, onCancel }: {
 
     try {
       if (budget) {
-        await updateBudget.mutateAsync({ ...formData, _id: budget._id });
+        await updateBudget.mutateAsync({ ...formData, _id: budget._id, userId: 'demo-user-id' });
         toast.success('Budget updated successfully');
       } else {
-        await addBudget.mutateAsync(formData);
+        await addBudget.mutateAsync({ ...formData, userId: 'demo-user-id' });
         toast.success('Budget added successfully');
       }
       onSuccess();

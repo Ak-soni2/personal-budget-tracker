@@ -76,10 +76,10 @@ const TransactionForm = ({ transaction, onSuccess, onCancel }: TransactionFormPr
       };
 
       if (transaction) {
-        await updateTransaction.mutateAsync({ ...transactionData, _id: transaction._id });
+        await updateTransaction.mutateAsync({ ...transactionData, _id: transaction._id, userId: 'demo-user-id' });
         toast.success('Transaction updated successfully');
       } else {
-        await addTransaction.mutateAsync(transactionData);
+        await addTransaction.mutateAsync({ ...transactionData, userId: 'demo-user-id' });
         toast.success('Transaction added successfully');
       }
       
