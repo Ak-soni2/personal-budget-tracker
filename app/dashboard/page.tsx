@@ -12,12 +12,20 @@ import CategoryPieChart from './components/CategoryPieChart';
 import BudgetRadarChart from './components/BudgetRadarChart';
 import SpendingInsights from './components/SpendingInsights';
 import Link from 'next/link';
+import { useState } from 'react';
 
 const DashboardPage = () => {
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
   const { data: dashboardData, isLoading, error } = useQuery({
-    queryKey: ['dashboard'],
+    queryKey: ['dashboard', selectedMonth, selectedYear],
     queryFn: async () => {
-      const response = await fetch('/api/dashboard');
+      const params = new URLSearchParams({
+        month: selectedMonth.toString(),
+        year: selectedYear.toString(),
+      });
+      const response = await fetch(`/api/dashboard?${params}`);
       if (!response.ok) throw new Error('Failed to fetch dashboard data');
       return response.json();
     },
@@ -58,6 +66,35 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
+        {/* Month/Year Selector */}
+        <div className="flex gap-4 mb-4">
+          <select
+            value={selectedMonth}
+            onChange={e => setSelectedMonth(Number(e.target.value))}
+            className="p-2 rounded bg-background text-foreground border border-input"
+          >
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {new Date(0, i).toLocaleString('default', { month: 'long' })}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedYear}
+            onChange={e => setSelectedYear(Number(e.target.value))}
+            className="p-2 rounded bg-background text-foreground border border-input"
+          >
+            {Array.from({ length: 5 }, (_, i) => {
+              const year = new Date().getFullYear() - i;
+              return (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

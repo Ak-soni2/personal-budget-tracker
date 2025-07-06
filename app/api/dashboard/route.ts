@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     await connectDB();
     
     const { searchParams } = new URL(request.url);
-    const month = parseInt(searchParams.get('month') || new Date().getMonth().toString()) + 1;
+    const month = parseInt(searchParams.get('month') || (new Date().getMonth() + 1).toString());
     const year = parseInt(searchParams.get('year') || new Date().getFullYear().toString());
     
     const startDate = new Date(year, month - 1, 1);
@@ -57,9 +57,11 @@ export async function GET(request: NextRequest) {
     // Monthly trends (last 6 months)
     const monthlyTrends = [];
     for (let i = 5; i >= 0; i--) {
-      const trendMonth = new Date(year, month - 1 - i, 1);
-      const trendStartDate = new Date(trendMonth.getFullYear(), trendMonth.getMonth(), 1);
-      const trendEndDate = new Date(trendMonth.getFullYear(), trendMonth.getMonth() + 1, 0);
+      const trendDate = new Date(year, month - 1 - i, 1);
+      const trendYear = trendDate.getFullYear();
+      const trendMonthIndex = trendDate.getMonth();
+      const trendStartDate = new Date(trendYear, trendMonthIndex, 1);
+      const trendEndDate = new Date(trendYear, trendMonthIndex + 1, 0);
       
       const monthTransactions = await Transaction.find({
         userId: defaultUserId,
@@ -71,7 +73,7 @@ export async function GET(request: NextRequest) {
         .reduce((sum, t) => sum + t.amount, 0);
       
       monthlyTrends.push({
-        month: trendMonth.toLocaleDateString('en-US', { month: 'short' }),
+        month: trendStartDate.toLocaleDateString('en-US', { month: 'short' }),
         amount: monthExpenses
       });
     }
