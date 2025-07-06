@@ -139,7 +139,7 @@ export default function Home() {
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join thousands of users who have already taken control of their financial future.
           </p>
-          <Link href="/login">
+          <Link href="/dashboard">
             <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8 animate-pulse-glow">
               Start Your Journey
               <ArrowRight className="h-5 w-5 ml-2" />
